@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stainless Steel Chairs Archive</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: black;
+        }
+
+        /* Body Styling */
+        body {
+            background-image: url('your-background.jpg'); /* Add your background image */
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        /* Header Styling */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+            z-index: 10;
+            color: #fff;
+        }
+
+        header a {
+            text-decoration: none;
+            color: #fff;
+            margin-left: 20px;
+        }
+
+        /* Main Title */
+        .main-title {
+            text-align: left;
+            font-size: 4rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 100px; /* Space above the title */
+            margin-bottom: 30px; /* Space below the title */
+            padding: 30px 80px 100px 40px; /* Adjustable padding */
+            color: #fff
+        }
+
+        /* Wrapper for Centering the Container */
+        .center-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 100px); /* Full height minus header space */
+            width: 100%;
+            position: relative; /* Relative positioning for the focus effect */
+        }
+
+        /* Container Content */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Two columns */
+            gap: 120px; /* Gutter between columns */
+            width: 100%;
+            max-width: 1200px;
+            position: relative; /* Ensure it's above the blur */
+            z-index: 2; /* Make sure content is above the blur layer */
+        }
+
+
+        /* Blur all other products except the hovered one */
+        .product:hover ~ .product {
+            filter: blur(10px); /* Apply blur to siblings */
+            transition: filter 0.3s ease; /* Smooth transition */
+        }
+
+        .product {
+            transition: filter 0.3s ease; /* Smooth transition */
+        }
+
+
+        /* Product Item */
+        .product {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centers horizontally */
+            text-align: left;
+            gap: 10px;
+        
+        }
+
+        .product img {
+            display: block;
+            margin: 0 auto; /* Ensures the image is centered horizontally */
+            max-width: 100%; /* Ensures responsiveness */
+            width: 300px; /* Let the width adjust automatically */
+            height: 400px; /* Set a consistent height */
+            object-fit: cover; /* Ensures the image fills the height without distortion */
+        }
+
+      
+            .product-info {
+            display: flex; /* Flexbox for alignment */
+            flex-direction: column; /* Keep items in a column */
+            align-items: first baseline; /* Align items to the left */
+            
+            margin-top: 10px;
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .product-info span {
+            display: flex; /* Use flex to align dot and text */
+            align-items: first baseline; /* Center align vertically */
+            text-align: left;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: #fff;
+            margin-right: 30px; /* 30px gutter between dot and text */
+        }
+
+        /* Footer Styling */
+        footer {
+            
+            color: #fff; /* White text */
+            text-align: right; /* Center content */
+            padding: 200px 20px 40px; /* Space inside footer */
+            position: relative; /* Default position */
+            bottom: 0;
+            width: 100%;
+            height: 1rem;
+            font-size: 10px;
+        }
+
+        a {
+            text-decoration: none; /* Remove underline */
+            color: inherit; /* Use the current text color */
+        }
+
+
+       
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div><a href="index.html">Steel Furnitures Archive</a> 
+        </div>
+        <div>
+            <a href="#">Index</a>
+            <a href="#">Info</a>
+        </div>
+    </header>
+
+    <!-- Main Title -->
+    <div class="main-title">
+        <a href="Chairs.html">Chairs(6)</a>, Tables(4), Storage(0), Decors(0)</div>
+
+    <!-- Center Wrapper -->
+    <div class="center-wrapper">
+    
+
+        <!-- Focused Content -->
+        <div class="container">
+            <!-- Product Item 1 -->
+            
+                <div class="product">
+                    <a href="https://thegoodliving.co/en/produkt/meadow/" target="_blank">
+                        <img src="Imgs/Chair_01.jpg.webp" alt="Chair 01">
+                        <div class="product-info">
+                            
+                            <span> <span class="dot"></span>Meadow Chair
+                                <br>Designed by Good Living&Co. 
+                                
+                            </span>
+                        </div>
+                    </a>
+                
+                </div>
+         
+            <!-- Product Item 2 -->
+            
+            <div class="product">
+                <a href="https://www.foromshop.com/products/curved-stainless-steel-lounge-chair?pr_prod_strat=e5_desc&pr_rec_id=eb1722c0a&pr_rec_pid=8476907995267&pr_ref_pid=8492686540931&pr_seq=uniform" target="_blank">
+                    <img src="Imgs/Chair_02.jpg" alt="Chair 02">
+                    <div class="product-info">
+                        <span> <span class="dot"></span>Marea Lounge Chair
+                            <br>Designed by FOROM
+                        </span>
+                    </div>
+                </a>
+            </div>
+           
+
+
+
+            <!-- Product Item 3 -->
+          
+            <div class="product">
+                <a href="https://kilzi.eu/product/the-tumble-chair-tall-back/" target="_blank">
+                    <img src="Imgs/Chair_03.jpg" alt="Chair 03">
+                    <div class="product-info">
+                        <span> <span class="dot"></span>The “Tumble” Chair 
+                        <br>Designed by Jorge Suarez Kilzi
+                        
+                        </span>
+                    </div>
+                </a>
+            </div>
+           
+
+
+
+
+            <!-- Product Item 4 -->
+            
+            <div class="product">
+                <a href="https://malvamalvamalva.com/shop/p/piedmont-chair-mndxl" target="_blank">
+                    <img src="Imgs/Chair_04.jpg" alt="Chair 04">
+                        <div class="product-info">
+                            <span> <span class="dot"></span>La Santa María Chair
+                                <br>Designed by malva office
+                                
+                            </span>
+                        </div>
+                </a>
+            </div>
+        
+
+
+
+
+            <!-- Product Item 5 -->
+            
+            <div class="product">
+                <a href="https://www.paulcoenen.nl/" target="_blank">
+                <img src="Imgs/Chair_05.jpg" alt="Chair 05">
+                <div class="product-info">
+                    <span> <span class="dot"></span>Camber Chair
+                        <br>Designed by Paul Coenen
+                       
+                    </span>
+                </div>
+            </a>
+            </div>
+        
+
+            <!-- Product Item 6 -->
+           
+            <div class="product">
+                <a href="https://www.lucasmunoz.com/site/project.php?id=490" target="_blank">
+                <img src="Imgs/Chair_06.jpg" alt="Chair 06">
+                <div class="product-info">
+                    <span> <span class="dot"></span>OFIS - Tubular Chair
+                    <br>Designed by Slavoj Zizek
+                   
+                </span>
+                </div>
+            </a>
+            </div>
+        
+
+            <!-- Product Item 7 -->
+            
+            <div class="product">
+                <a href="https://304cage.com/folded-stainless-steel-table" target="_blank">
+                <img src="Imgs/Table_01.webp" alt="Chair 06">
+                <div class="product-info">
+                    <span> <span class="dot"></span>Folded Stainless Steel Table
+                    <br>Designed by 304.cage 
+                   
+                </span>
+                </div>
+            </a>
+            </div>
+        
+
+            <!-- Product Item 8 -->
+            
+            <div class="product">
+                <a href="" target="_blank">
+                <img src="Imgs/Table_02.jpg" alt="Chair 06">
+                <div class="product-info">
+                    <span> <span class="dot"></span>Alu Cast Marble Coffee Table 
+                    <br>Designed by Ben Storms
+                   
+                </span>
+                </div>
+            </a>
+            </div>
+       
+
+            <!-- Product Item 9 -->
+            
+            <div class="product">
+                <a href="https://thegoodliving.co/en/produkt/meadow/" target="_blank">
+                <img src="Imgs/Table_03.jpg" alt="Chair 06">
+                <div class="product-info">
+                    <span> <span class="dot"></span>Free Form Low Table
+                    <br>Designed by  Karl Springer LTD
+                    
+                </span>
+                </div>
+            </a>
+            </div>
+        
+
+            <!-- Product Item 10 -->
+            
+            <div class="product">
+                <a href="https://www.foromshop.com/products/stainless-steel-mirrored-coffee-table-1?variant=44858976960643&country=US&currency=USD&utm_medium=product_sync&utm_source=google&utm_content=sag_organic&utm_campaign=sag_organic&gad_source=1&cid=17817552164&gclid=Cj0KCQiAy8K8BhCZARIsAKJ8sfTUyhF88qLofCCxDKLN6sWeWap0i3Ki460lEqB-XaT5vJwqhoxt0xoaAqhLEALw_wcB" target="_blank">
+                <img src="Imgs/Table_04.jpg" alt="Chair 06">
+                <div class="product-info">
+                    <span> <span class="dot"></span>Stainless Steel Coffee Table
+                    <br>Designed by FOROM
+                   
+                </span>
+                </div>
+            </a>
+            </div>
+        
+
+
+
+
+
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Joy Zou. All rights reserved.</p>
+    </footer>
+
+</body>
+
+
+
+</html>
