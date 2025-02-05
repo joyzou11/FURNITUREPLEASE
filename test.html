@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE STEEL PLANET</title>
+    <link rel="stylesheet" href="styles.css">
+
+    
+</head>
+<body>
+    <div class="background"></div>
+    <div class="bgstar"></div>
+    <div class="moon"></div>
+
+    <button class="menu-btn">
+        <a href="index.html" class="menu-btn">BACK TO ARCHIVE</a>
+    </button>
+
+    <div class="header-container">
+        <div class="left">
+            <img src="img_p/starone.png" alt="star-icon">
+        </div>
+        <div class="center">
+            <p>THE STEEL <br>PLANET</p>
+        </div>
+        <div class="right">
+            <img src="img_p/starone.png" alt="star-icon">
+        </div>
+    </div>
+
+    <div class="scroll-down">SCROLL DOWN</div>
+    <div class="content"></div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const CONFIG = {
+            card: {
+                total: 12,
+                maxAngle: 60,
+                radius: 1000,
+                hoverOffset: 20
+            },
+            scroll: {
+                triggerDistance: 100,
+                maxMoonScale: 1.5,
+                minStackBottom: 3,
+                appearThreshold: 0.05
+            },
+            frames: {
+                total: 12,// Total frames for back images
+                baseName: 'img_p/Frame_'// Base path for frame images
+            }
+        };
+
+        // 元素引用 Element references
+        const stack = document.createElement('div');
+        stack.className = 'card-stack';
+        const moon = document.querySelector('.moon');
+        const header = document.querySelector('.header-container');
+        const scrollDown = document.querySelector('.scroll-down');
+        const content = document.querySelector('.content');
+
+        /* 卡片生成系统 Card Generation System */
+        function createCards() {
+            stack.innerHTML = '';
+            const cards = [];
+
+            for (let i = 0; i < CONFIG.card.total; i++) {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                // 创建双面结构 Create double-sided structure
+                const inner = document.createElement('div');
+                inner.className = 'card-inner';
+
+                // 正面  Front side
+                const front = document.createElement('div');
+                front.className = 'card-front';
+                const frontImg = new Image();
+                frontImg.src = 'img_p/back_card.png';
+                front.appendChild(frontImg);
+
+                // 背面 Back side
+                const back = document.createElement('div');
+                back.className = 'card-back';
+                const backImg = new Image();
+                back.appendChild(backImg);
+
+                inner.appendChild(front);
+                inner.appendChild(back);
+                card.appendChild(inner);
+
+                // 位置计算 Position calculation
+                const angle = -CONFIG.card.maxAngle/2 + 
+                            (CONFIG.card.maxAngle/(CONFIG.card.total-1))*i;
+                const radian = angle * Math.PI/180;
+                const xPos = Math.sin(radian) * CONFIG.card.radius;
+                const yPos = Math.cos(radian) * CONFIG.card.radius - CONFIG.card.radius;
+
+                card.style.transform = `rotate(${angle}deg) translate(${xPos}px, ${yPos}px)`;
+                card.dataset.initialTransform = card.style.transform;
+                card.dataset.brightness = 0.7;
+
+                stack.appendChild(card);
+                cards.push(card);
+            }
+            return cards;
+        }
+
+        /* 滚动控制系统 Scroll Control System */
+        function setupScroll() {
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                const progress = Math.min(Math.pow(scrollY / CONFIG.scroll.triggerDistance, 0.5), 1);
+                const triggerProgress = Math.min(scrollY / CONFIG.scroll.triggerDistance, 1);
+                const header = document.querySelector('.header-container');
+                
+                // 滚动提示  Scroll prompt fade out
+                scrollDown.style.opacity = 1 - progress;
+
+                // 月亮缩放 Moon scaling effect
+                const moonScale = 1 + (CONFIG.scroll.maxMoonScale - 1) * progress;
+                moon.style.transform = `translateX(-50%) scale(${moonScale})`;
+
+                // 标题缩放 Header scaling effect
+                header.classList.toggle('scrolled', scrollY > 50);
+                if (scrollY > 50) {
+                 header.classList.add('scrolled');
+                 } else {
+                        header.classList.remove('scrolled');
+                    
+                }
+                
+
+                // 卡片位置 Card stack movement
+                const initialBottom = -5;
+                const targetBottom = CONFIG.scroll.minStackBottom;
+                const currentBottom = initialBottom + (targetBottom - initialBottom) * progress;
+                stack.style.bottom = `${currentBottom}vh`;
+                const adjustedProgress = Math.max((triggerProgress - 0.5) * 2, 0);
+                stack.style.opacity = Math.min(adjustedProgress, 1) ;
+
+                header.classList.toggle('scrolled', scrollY > 50);
+            });
+        }
+
+        /* 卡片交互系统 Card Interaction System */
+        function setupCardInteractions(cards) {
+            const originalHandlers = new Map();
+            cards.forEach(card => {
+                // 悬停效果 Hover effect
+                const initialTransform = card.dataset.initialTransform;
+                const angle = parseFloat(initialTransform.match(/rotate\(([-\d.]+)deg/)[1]);
+                const [xPos, yPos] = initialTransform.match(/translate\(([-\d.]+)px, ([- \d.]+)px/).slice(1).map(Number);
+                
+                const leaveHandler = () => {
+                    card.style.transform = card.dataset.initialTransform;
+                    card.style.filter = `brightness(${card.dataset.brightness})`;
+                    card.style.zIndex = 'auto';
+                    cards.forEach(other => other.style.filter = `brightness(${other.dataset.brightness})`);
+                };
+                originalHandlers.set(card, {leaveHandler});
+                
+                 // 悬停效果 Hover effect
+
+                card.addEventListener('mouseenter', () => {
+                    if(card.classList.contains('active')) return; 
+                    const angle = parseFloat(card.dataset.angle);
+                    const xPos = parseFloat(card.dataset.originalX);
+                    const yPos = parseFloat(card.dataset.originalY);
+
+                    const radian = angle * Math.PI / 180;
+                    const offsetX = Math.sin(radian) * CONFIG.card.hoverOffset;
+                    const offsetY = Math.cos(radian) * CONFIG.card.hoverOffset;
+
+                    card.style.transform = `
+                        rotate(${angle}deg)
+                        translate(${xPos - offsetX}px, ${yPos - offsetY}px)
+                    `;
+                    card.style.filter = 'brightness(1.2)';
+                    card.style.zIndex = 999;
+
+                    cards.forEach(other => {
+                        if(other !== card) other.style.filter = 'brightness(0.5)';
+                    });
+                });
+
+                card.addEventListener('mouseleave', leaveHandler);
+
+                //card.addEventListener('mouseleave', () => {
+                    //card.style.transform = initialTransform;
+                    //card.style.filter = `brightness(${card.dataset.brightness})`;
+                    //card.style.zIndex = 'auto';
+                    //cards.forEach(other => other.style.filter = `brightness(${other.dataset.brightness})`);
+                //});
+
+                // 点击效果 Click effect
+                card.addEventListener('click', () => {
+                    if(document.querySelector('.overlay-mask')) return; // 防止重复点击
+                    // 生成随机帧  Generate a random frame
+                    const randomFrame = Math.floor(Math.random() * CONFIG.frames.total) + 1;
+                    const backImg = card.querySelector('.card-back img');
+                    backImg.src = `${CONFIG.frames.baseName}${randomFrame}.png`;
+
+                    // 模糊效果
+                    //document.body.classList.add('blur-effect');
+
+                    // 添加遮罩层
+                   // const overlay = document.createElement('div');
+                    //overlay.className = 'overlay-mask';
+                    //document.body.appendChild(overlay);
+                    
+                     // 禁用所有悬停效果
+                    cards.forEach(c => {
+                        c.style.pointerEvents = 'none'; // 禁用其他卡片
+                        c.removeEventListener('mouseleave', originalHandlers.get(c).leaveHandler);
+                    });
+
+                     // 标记激活状态
+                        card.classList.add('active');
+
+
+                    // 计算中心位置
+                    const viewportCenter = { // 取消注释并修复变量定义
+                        x: window.innerWidth/2 - card.offsetWidth/2,
+                        y: window.innerHeight/2 - card.offsetHeight/2
+                    };
+
+                    card.style.position = 'fixed';
+                    card.style.zIndex = 1000;
+                    card.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+                    card.style.transform = `translate(${viewportCenter.x}px, ${viewportCenter.y}px) scale(1.2)`;
+                    card.classList.add('flipped', 'card-center');
+                    
+                        
+
+                    // 创建Redo按钮
+                    const redoBtn = document.createElement('button');
+                    redoBtn.className = 'redo-button';
+                    redoBtn.textContent = 'REDO';
+                    redoBtn.onclick = () => {
+                        window.location.reload();
+                        window.scrollTo(0,0);
+                    };
+                    document.body.appendChild(redoBtn);
+
+                    // 禁用其他交互
+                    cards.forEach(other => {
+                        if(other !== card) {
+                            other.style.pointerEvents = 'none';
+                        }
+                    });
+                    document.querySelector('.menu-btn').style.pointerEvents = 'none';
+                    document.querySelector('.scroll-down').style.pointerEvents = 'none';
+
+
+
+
+                });
+            });
+        }
+
+        /* 初始化 Initialization  */
+        function init() {
+            // 创建内容容器 Create content container
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'content';
+            document.body.appendChild(contentDiv);
+            contentDiv.appendChild(stack);
+
+            // 创建卡片 Create cards
+            const cards = createCards();
+            
+            // 设置系统 Setup systems
+            setupScroll();
+            setupCardInteractions(cards);
+        }
+
+        init();
+    });
+
+    
+    </script>
+
+    <div id="snow-container"></div> <!-- 雪花容器 -->
+    <script src="snowfall.js"> console.log("Snowfall.js is loaded!");</script>
+    
+</body>
+</html>

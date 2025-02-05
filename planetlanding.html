@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE STEEL<br>PLANET</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* 背景层 */
+         /* 最底层：黑色背景 */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: black;
+            z-index: -4;
+        }
+
+        /* 中间层：固定的星空背景 */
+        .bgstar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: url('img_p/bgstars.png') no-repeat center center/cover;
+            z-index: -3;
+        }
+
+        /* 最上层：月亮 */
+        .moon {
+            position: fixed;
+            top: 2%;
+            left: 50%;
+            width: 55vw; /* 初始大小，比屏幕稍小 */
+            height: 55vw; 
+            background: url('img_p/moon.png') no-repeat center center/contain;
+            z-index: -2;
+            transform: translateX(-50%) scale(1); /* 初始大小 */
+            transition: transform 1s ease-out;
+        }
+
+        /* 修改标题容器样式 */
+        .header-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: row; /* 保持水平排列 */
+            justify-content: center; /* 确保整体居中 */
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 添加平滑过渡 */
+        }
+
+        /* 添加滚动状态样式 */
+        .header-container.scrolled {
+            top: 20px;
+            transform: translateX(-50%);
+        }
+        .header-container.scrolled h1 {
+            font-size: 3rem; /* 原始尺寸的60% */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            transition: font-size 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        
+        .header-container.scrolled .star-icon {
+            width: 25px;  /* 原50px的50% */
+            height: 25px;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .star-icon {
+            width: 50px;
+            height: 50px;
+            margin-right: 1rem;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 7rem;
+            white-space: pre-line;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+        }
+
+        /* 右上角按钮 */
+        .menu-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 100;
+            border-radius: 30px;
+        }
+
+        .menu-btn:hover {
+            background: rgba(255,255,255,0.4);
+        }
+
+        /* 滚动提示 */
+        .scroll-down {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            transition: opacity 0.2s ease-out;
+        }
+
+        .content {
+            position: relative;
+            height: 100vh; /* 创建滚动空间 */
+        }
+
+        /* 修改卡片容器定位 */
+        .card-stack {
+        position: absolute;
+        bottom: -30vh; /* 初始在屏幕底部以下 30% */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80vw;
+        height: 400px;
+        display: flex;
+        justify-content: center;
+        opacity: 0;
+        transition: bottom 0.5s ease-out, opacity 0.5s ease-out;
+        }
+    
+
+        /* 统一卡片大小并添加悬停效果 */
+        .card {
+            position: absolute;
+            width: 250px;
+            height: 350px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform-origin: bottom center;
+            transition: transform 0.3s ease-out, filter 0.3s ease-out;
+            filter: brightness(0.7); /* 初始亮度 */
+        }
+   
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .content {
+            height: 200vh; /* 增加滚动空间 */
+        }
+  
+    </style>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 元素引用
+        const stack = document.querySelector('.card-stack');
+        const moon = document.querySelector('.moon');
+        const header = document.querySelector('.header-container');
+        const scrollDown = document.querySelector('.scroll-down');
+        const content = document.querySelector('.content');
+        
+        // 配置参数
+        
+
+        const CONFIG = {
+        card: {
+            total: 12, 
+            total: 20,
+            maxAngle: 60,
+            radius: 1000,
+            hoverOffset: 20
+        },
+        scroll: {
+            triggerDistance: 800,
+            maxMoonScale: 1.5,
+            minStackBottom: 5 // 最终位置5%
+        },
+        frames: {
+            total: 12,
+            baseName: 'Frame_'
+        }
+    };
+    
+        /* 卡片生成系统 */
+        function createCards() {
+            stack.innerHTML = '';
+            const cards = [];
+    
+            for (let i = 0; i < CONFIG.card.total; i++) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                // 位置计算
+                const angle = -CONFIG.card.maxAngle/2 + 
+                             (CONFIG.card.maxAngle/(CONFIG.card.total-1))*i;
+                const radian = angle * Math.PI/180;
+                
+                const xPos = Math.sin(radian) * CONFIG.card.radius;
+                const yPos = Math.cos(radian) * CONFIG.card.radius - CONFIG.card.radius;
+    
+                // 存储初始位置数据
+                card.dataset.initialTransform = 
+                    `rotate(${angle}deg) translate(${xPos}px, ${yPos}px)`;
+                card.dataset.brightness = 0.7; // 初始亮度
+    
+                // 应用初始样式
+                card.style.transform = card.dataset.initialTransform;
+                card.style.filter = `brightness(${card.dataset.brightness})`;
+    
+                // 添加图片
+                const img = new Image();
+                img.src = 'img_p/back_card.png';
+                card.appendChild(img);
+    
+                stack.appendChild(card);
+                cards.push(card);
+            }
+            
+            return cards;
+        }
+    
+        /* 滚动控制系统 */
+        function setupScroll() {
+            let lastScrollY = 0;
+            
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                const progress = Math.min(scrollY / CONFIG.scroll.triggerDistance, 1);
+    
+                // 1. 滚动提示淡出
+                scrollDown.style.opacity = 1 - progress;
+    
+                // 2. 月亮缩放控制
+                const moonScale = 1 + (CONFIG.scroll.maxMoonScale - 1) * progress;
+                moon.style.transform = `translateX(-50%) scale(${moonScale})`;
+    
+                // 3. 标题缩放控制
+                header.classList.toggle('scrolled', scrollY > 50);
+    
+                // 4. 卡片堆叠位置控制
+                const maxBottom = 30; // 最高不超过30%
+                const targetBottom = 30 + (70 * (1 - scrollProgress)); // 从-30%到30%
+                stack.style.bottom = `${Math.min(maxBottom, targetBottom)}vh`;
+
+                stack.style.opacity = progress > 0.2 ? 1 : 0;
+    
+                lastScrollY = scrollY;
+            });
+        }
+    
+        /* 卡片悬停系统 */
+        function setupHover(cards) {
+        cards.forEach(card => {
+        // 从初始transform中解析角度和位置
+        const initialTransform = card.dataset.initialTransform;
+        const angle = parseFloat(initialTransform.match(/rotate\(([-\d.]+)deg/)[1]);
+        const [xPos, yPos] = initialTransform.match(/translate\(([-\d.]+)px, ([- \d.]+)px/)
+            .slice(1)
+            .map(Number);
+
+        // 存储计算后的原始坐标
+        card.dataset.originalX = xPos;
+        card.dataset.originalY = yPos;
+        card.dataset.angle = angle;
+
+        card.addEventListener('mouseenter', () => {
+            // 计算沿角度方向的偏移量
+            const radian = angle * Math.PI / 180;
+            const offsetX = Math.sin(radian) * CONFIG.card.hoverOffset;
+            const offsetY = Math.cos(radian) * CONFIG.card.hoverOffset;
+
+            // 应用新位置（沿半径向外）
+            card.style.transform = `
+                rotate(${angle}deg) 
+                translate(${xPos - offsetX}px, ${yPos - offsetY}px)
+            `;
+            
+            // 视觉效果增强
+            card.style.filter = 'brightness(1.2)';
+            card.style.zIndex = 999;
+
+            // 其他卡片变暗
+            cards.forEach(other => {
+                if(other !== card) other.style.filter = 'brightness(0.5)';
+            });
+        });
+
+        card.addEventListener('mouseleave', () => {
+            // 恢复原始状态
+            card.style.transform = initialTransform;
+            card.style.filter = `brightness(${card.dataset.brightness})`;
+            card.style.zIndex = 'auto';
+            
+            // 恢复其他卡片
+            cards.forEach(other => {
+                if(other !== card) other.style.filter = `brightness(${other.dataset.brightness})`;
+            });
+        });
+    });
+}
+    
+        /* 初始化 */
+        function init() {
+            // 创建内容容器（解决滚动问题）
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'content';
+            document.body.appendChild(contentDiv);
+            contentDiv.appendChild(stack);
+    
+            // 创建卡片
+            const cards = createCards();
+            
+            // 设置系统
+            setupScroll();
+            setupHover(cards);
+        }
+    
+        init();
+    });
+    </script>
+   
+
+    
+</head>
+<body>
+    <div class="background"></div>
+    <div class="bgstar"></div>
+    <div class="moon"></div>
+
+    <button class="menu-btn">BACK TO ARCHIVE</button>
+
+    <div class="header-container">
+        <h1>THE STEEL PLANET</h1>
+        <img src="img_p/starone.png" class="star-icon" alt="Star">
+        
+    </div>
+
+    <div class="scroll-down">SCROLL DOWN</div>
+
+    <div class="content">
+        
+   
+        <div class="card-stack">
+            <!-- 添加12张卡片 -->
+            <div class="card"><img src="img_p/back_card.png"></div>
+            <div class="card"><img src="img_p/back_card.png"></div>
+            <div class="card"><img src="img_p/back_card.png"></div>
+            <div class="card"><img src="img_p/back_card.png"></div>
+            <div class="card"><img src="img_p/back_card.png"></div>
+            <div class="card"><img src="img_p/back_card.png"></div>
+            <div class="card"><img src="img_p/back_card.png"></div>
+            <div class="card"><img src="img_p/back_card.png"></div>
+            <div class="card"><img src="img_p/back_card.png"></div>
+            <div class="card"><img src="img_p/back_card.png"></div>
+            <div class="card"><img src="img_p/back_card.png"></div>
+            <div class="card"><img src="img_p/back_card.png"></div>
+
+            <!-- 重复到12个 -->
+        </div>
+    </div>
+
+    
+</body>
+</html> 

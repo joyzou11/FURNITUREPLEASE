@@ -1,0 +1,346 @@
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        @font-face {
+            font-family: 'Nomark';
+            src:url('NomarkRegular.woff') format('woff');
+            font-weight: normal;
+            font-style: noraml;
+        }
+        
+   
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        
+
+        /* 背景层 */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: black;
+            z-index: -4;
+        }
+
+        @keyframes starGlow {
+            0% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1.2; transform: scale(1.01); }
+            100% { opacity: 0.4; transform: scale(1); }
+        }
+
+        .bgstar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: url('img_p/bgstars.png') no-repeat center center/cover;
+            z-index: -3;
+
+            animation: starGlow 5s infinite alternate ease-in-out;
+        }
+
+        @keyframes moonGlow {
+            0% { opacity: 0.7; }
+            25% { opacity: 0.85; }
+            50% { opacity: 1; }
+            75% { opacity: 0.85; }
+            100% { opacity: 0.7; }
+        }
+        
+        .moon {
+            position: fixed;
+            top: 1%;
+            left: 50%;
+            width: 55vw;
+            height: 55vw; 
+            background: url('img_p/moon.png') no-repeat center center/contain;
+            z-index: -2;
+            transform: translateX(-50%) scale(1);
+            transition: transform 1s ease-out;
+            animation: moonGlow 5s infinite alternate ease-in-out;
+        }
+
+        /* 标题样式 */
+        .header-container {
+            position: fixed;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: row;
+            width: 60%;
+            height:30%;
+            
+            gap: 1px;
+            transition: all 0.8s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+            
+            .right {
+            flex: 1; /* 两侧的列相等 */
+            align-self: first baseline;
+            
+            }
+            .left {
+                flex: 1;
+                opacity: 0;
+            
+
+            }
+
+            
+            .center {
+            flex: 3; /* 中间的列更大 */
+            display: flex;
+            justify-content: center; /* 水平方向居中 */
+            align-items: center;
+            text-align: center;
+            
+            }
+
+            @keyframes glowOpacity {
+                0% { opacity: 0.9; }
+                100% { opacity: 1; }
+            }
+            
+            
+            .star-icon {
+                width: 70px;
+                height: 70px;
+                transition: all 1s ease-in-out;
+                animation: glowOpacity 0.5s infinite alternate; 
+
+        
+            }
+            
+
+            p {
+                color: #fff;
+                font-size: 6.6rem;
+                white-space: normal;
+                text-align: center;
+                align-items: center;
+                font-family: 'Nomark', serif;
+                letter-spacing: 3px;
+                text-shadow: 
+                    0 0 10px rgba(255, 255, 255, 0.8), 
+                    0 0 20px rgba(255, 255, 255, 0.6), 
+                    0 0 30px rgba(255, 255, 255, 0.4);
+                transition: all 1s ease-in-out;
+            }
+
+        .header-container.scrolled {
+            top: 10px;
+            transform: translateX(-50%) scale(0.5); /* 整体缩小 50% */
+            width: 40%;
+            height: 20%; /* 适当调整高度 */
+            gap: 1px;
+            align-items: first baseline; /* 对齐顶部基线 */
+            left: 45%;
+            
+                
+            
+        }
+
+        
+        .header-container.scrolled p {
+            font-size: 5rem;
+            white-space: nowrap;
+        }
+        
+
+        .header-container.scrolled p br {
+            display: none; /* 隐藏换行 */
+        }
+
+        
+
+    
+        .header-container.scrolled .star-icon{
+            width: 30px;
+            height: 30px;
+        }
+
+       
+
+        /* 交互元素 */
+        .menu-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 100;
+            border-radius: 30px;
+            text-decoration: none;
+        }
+
+        .menu-btn:hover {
+            background: rgba(255,255,255,0.4);
+        }
+
+        .scroll-down {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgb(179, 179, 179);
+            opacity: 50%;
+            text-shadow:  rgb(255, 255, 255);
+            transition: opacity 0.2s ease-out;
+        }
+
+        /* 卡片系统 */
+        .content {
+            position: relative;
+            height: 100vh;
+        }
+
+        .card-stack {
+            position: absolute;
+            bottom: -30vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80vw;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            opacity: 0;
+            transition: bottom 0.5s cubic-bezier(0.25, 0.86, 0.35, 1.1), 
+                opacity 0.8s ease-out;
+        }
+
+        .card {
+            position: absolute;
+            width: 250px;
+            height: 350px;
+            border-radius: 5px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform-origin: bottom center;
+            transition: all 0.3s ease-out;
+            filter: brightness(0.7);
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-center {
+            left: 50% !important;
+            top: 50% !important;
+            transform: translate(-50%, -50%) scale(1.3) !important;
+            box-shadow: 
+                    0 0 10px rgba(255, 255, 255, 0.8), 
+                    0 0 20px rgba(255, 255, 255, 0.6), 
+                    0 0 30px rgba(255, 255, 255, 0.4);
+        }
+
+
+
+
+        /* 特效样式 */
+        
+
+        .redo-button {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            opacity: 80%;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            z-index: 1000;
+            
+            transition: all 0.3s;
+        }
+
+        .redo-button:hover {
+            border: 2px white;
+            transform: translateX(-50%) scale(1.05);
+        }
+
+
+
+            /* 雪花容器 */
+            #snow-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                pointer-events: none; /* 避免影响点击 */
+                
+                overflow: hidden;
+                z-index: 999;
+            }
+
+            /* 雪花样式 */
+            .snowflake {
+                position: absolute;
+                width: 2px; /* 固定大小 1px */
+                height: 2px;
+                background-color: white;
+                border-radius: 50%; /* 圆形 */
+                opacity: 0.8;
+                animation: fall linear infinite;
+            }
+
+            /* 雪花飘落动画 */
+            @keyframes fall {
+                to {
+                    transform: translate(var(--x-move), var(--y-move));
+                    opacity: 0;
+                }
+            }
+            @keyframes sway {
+                0% { transform: translateX(0); }
+                50% { transform: translateX(20px); }
+                100% { transform: translateX(-20px); }
+            }
